@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  mysql-rabbit-producer:
+    image: mysql:8.4
+    container_name: ms-rabbitmq-producer-mysql-db
+    restart: unless-stopped
+
+    environment:
+      MYSQL_ROOT_PASSWORD: Root123456!
+      MYSQL_DATABASE: ms-rabbitmq-producer
+      MYSQL_USER: user
+      MYSQL_PASSWORD: User123456!
+
+    ports:
+      - "3309:3306"
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+
+    networks:
+      - rabbitmq_messaging-network
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pRootPassword123!"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql_data:
+
+networks:
+  rabbitmq_messaging-network:
+    external: true
