@@ -22,25 +22,43 @@ public class BookService implements IBookService{
 
 
     @Override
-    public BookResponse registerBook(CreateBookRequest book) {
-        Book bookDb = repository.save(mapper.toEntity(book));
-        return mapper.toResponse(bookDb);
+    public Book registerBook(CreateBookRequest book) {
+        return repository.save(mapper.toEntity(book));
     }
 
     @Override
     public void updateBook(Long id, UpdateBookRequest book) {
+
         Book bookDb = repository.findById(id).orElseThrow( () ->
                 new ResourceNotFoundException("Book","id",id)
         );
+
+        bookDb.setAuthor(book.getAuthor());
+        bookDb.setCategory(book.getCategory());
+        bookDb.setIsbn(bookDb.getIsbn());
+        bookDb.setDescription(book.getDescription());
+        bookDb.setLanguage(book.getLanguage());
+        bookDb.setPrice(book.getPrice());
+        bookDb.setPublicationYear(book.getPublicationYear());
+        bookDb.setPublisher(book.getPublisher());
+        bookDb.setTitle(bookDb.getTitle());
+
+        repository.save(bookDb);
     }
 
     @Override
     public Optional<BookResponse> findBook(Long bookId) {
-        return Optional.empty();
+        return Optional.ofNullable(mapper.toResponse(repository.findById(bookId).orElseThrow(
+                () -> new ResourceNotFoundException("Book", "id", bookId))));
     }
 
     @Override
     public void deleteBook(Long bookId) {
 
+        Book exist = repository.findById(bookId).orElseThrow(
+                () -> new ResourceNotFoundException("Book","id",bookId)
+        );
+
+        repository.delete(exist);
     }
 }
