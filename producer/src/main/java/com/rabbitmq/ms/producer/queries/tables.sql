@@ -1,4 +1,4 @@
---Book
+# Book
 CREATE TABLE books (
                        id BIGINT NOT NULL AUTO_INCREMENT,
                        isbn VARCHAR(20) NOT NULL,

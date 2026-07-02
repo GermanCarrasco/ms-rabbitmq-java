@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Builder
+@ToString
 @Setter
 @Getter
 @NoArgsConstructor

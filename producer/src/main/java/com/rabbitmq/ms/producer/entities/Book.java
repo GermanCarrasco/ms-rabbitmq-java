@@ -2,6 +2,8 @@ package com.rabbitmq.ms.producer.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -11,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "book")
+@Table(name = "books")
 @Entity
 public class Book {
 
@@ -27,6 +29,10 @@ public class Book {
     private String language;
     private String category;
     private BigDecimal price;
+    @CreationTimestamp
+    @Column(nullable = false,updatable = false)
     private LocalDateTime createdAt;
+    @UpdateTimestamp
+    @Column(nullable = false)
     private LocalDateTime updatedAt;
 }
