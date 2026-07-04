@@ -2,7 +2,6 @@ package com.rabbitmq.ms.producer.dtos;
 
 
 import lombok.*;
-
 import java.math.BigDecimal;
 
 @Builder
