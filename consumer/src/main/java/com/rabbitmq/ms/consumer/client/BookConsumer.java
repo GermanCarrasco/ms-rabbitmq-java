@@ -19,6 +19,8 @@ public class BookConsumer {
     @RabbitListener(queues = RabbitConfig.QUEUE)
     public void receive(BookCreatedEvent event){
 
+        //Its create the registry of inventory for a book.
+
         log.info("Event receive -> book created: {} ",event.toString());
 
         Inventory inventory = mapper.toInventory(event);
@@ -26,8 +28,14 @@ public class BookConsumer {
         inventory.setTotalStock(0);
         inventory.setReservedStock(0);
         inventory.setAvailableStock(0);
-        inventory.setStatus("AVAILABLE");
+        inventory.setStatus("OUT_OF_STOCK");
+
+        //Save the event on the db
 
 
+//
+//        OUT_OF_STOCK → availableStock = 0
+//        LOW_STOCK → availableStock > 0 pero por debajo de un umbral
+//        AVAILABLE → stock suficiente
     }
 }

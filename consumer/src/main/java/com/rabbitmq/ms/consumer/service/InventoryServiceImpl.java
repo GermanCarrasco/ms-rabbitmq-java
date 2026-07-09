@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Slf4j
 @Service
@@ -45,11 +47,16 @@ public class InventoryServiceImpl implements IInventoryService {
 
     @Override
     public Inventory findByBookId(Long id) {
-        return null;
+        return repository.findBybookId(id).orElseThrow(
+                () -> new ResourceNotFoundException("findByBookId", "id", id)
+        );
     }
 
     @Override
     public void deleteInventoryByBookId(Long bookId) {
-
+        Inventory book = repository.findBybookId(bookId).orElseThrow(
+                () -> new ResourceNotFoundException("deleteInventoryByBookId", "bookId", bookId)
+        );
+        repository.delete(book);
     }
 }

@@ -4,7 +4,9 @@ import com.rabbitmq.ms.consumer.entities.Inventory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface IInventoryRepository extends JpaRepository<Inventory,Long> {
-    Inventory findBybookId(Long id);
+    Optional<Inventory> findBybookId(Long id);
 }
