@@ -4,6 +4,7 @@ import com.rabbitmq.ms.consumer.config.RabbitConfig;
 import com.rabbitmq.ms.consumer.entities.Inventory;
 import com.rabbitmq.ms.consumer.events.BookCreatedEvent;
 import com.rabbitmq.ms.consumer.mapper.IInventoryMapper;
+import com.rabbitmq.ms.consumer.service.InventoryServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -14,13 +15,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class BookConsumer {
 
-    private IInventoryMapper mapper;
+    private final  IInventoryMapper mapper;
+    private final InventoryServiceImpl service;
 
     @RabbitListener(queues = RabbitConfig.QUEUE)
     public void receive(BookCreatedEvent event){
 
-        //Its create the registry of inventory for a book.
-
+        /****
+         * <h1>Its creation the registry of inventory for a book.</h1>
+         * <p>
+         *     OUT_OF_STOCK → availableStock = 0
+         *     LOW_STOCK → availableStock > 0 pero por debate de un umbral
+         *     AVAILABLE → stock sufficient
+         * </p>
+         * ***/
         log.info("Event receive -> book created: {} ",event.toString());
 
         Inventory inventory = mapper.toInventory(event);
@@ -30,12 +38,9 @@ public class BookConsumer {
         inventory.setAvailableStock(0);
         inventory.setStatus("OUT_OF_STOCK");
 
-        //Save the event on the db
+        Inventory saved = service.createInventory(inventory);
 
+        log.info("Inventory added: {}",saved.getId());
 
-//
-//        OUT_OF_STOCK → availableStock = 0
-//        LOW_STOCK → availableStock > 0 pero por debajo de un umbral
-//        AVAILABLE → stock suficiente
     }
 }
